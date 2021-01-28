@@ -1,0 +1,14 @@
+<h2>{{title}} - ({{total}})</h2>
+<table style="width:100%; table-layout:fixed">
+  <tr>
+    <th>Old</th>
+    <th>New</th>
+  </tr>
+
+  {{#items}}
+    <tr>
+    <td><pre>{{old}}</pre></td>
+    <td><pre>{{new}}</pre></td>
+    </tr>
+  {{/items}}
+</table>

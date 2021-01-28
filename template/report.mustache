@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      td {
+        overflow: scroll
+      }
+    </style>
+  </head>
+  <body>
+    <div id="#top"></div>
+    <ul>
+      <h2>Sections</h2>
+      <li>
+        <a href="#whitelist">Whitelist Blocks - {{whitelist.total}}</a>
+      </li>
+      <li>
+        <a href="#blacklist">Blacklist Blocks - {{blacklist.total}}</a>
+      </li>
+      <li>
+        <a href="#skipped">Skipped Blocks - {{skipped.total}}</a>
+      </li>
+      <li>
+        Unhandled Modules (see logs) - {{unhandled_count}}
+      </li>
+    </ul>
+
+    <div id="total">Total blocks - {{total}}</div>
+
+    <div id="whitelist">
+      <a href="#top">Goto Top</a>
+      {{#whitelist}}
+        {{> old_new }}
+      {{/whitelist}}
+    </div>
+
+    <div id="blacklist">
+      <a href="#top">Goto Top</a>
+      {{#blacklist}}
+        {{> old_new }}
+      {{/blacklist}}
+    </div>
+    
+    <div id="skipped">
+      <a href="#top">Goto Top</a>
+      {{#skipped}}
+        {{> skipped }}
+      {{/skipped}}
+    </div>
+
+    <a href="#top">This is the end. Goto Top</a>
+  </body>
+</html>
