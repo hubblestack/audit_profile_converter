@@ -43,7 +43,8 @@ class ModuleConverter(ABC):
 
     def _convert_helper(self, block_id, single_block, is_whitelist=True):
         if self._is_skipped(single_block):
-            self._report_handler.skipped({block_id: single_block})
+            self._report_handler.skipped({
+                self._module_name: {block_id: single_block}})
             return None
         converted = self._build_initial_structure(block_id, single_block, is_whitelist)
         for p_os, pdata in single_block['data'].items():

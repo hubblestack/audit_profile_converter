@@ -6,6 +6,9 @@ from module_handler.stat import Stat
 from module_handler.misc import Misc
 from module_handler.service import Service
 from module_handler.winsecedit import WinSecedit
+from module_handler.winreg import WinReg
+from module_handler.winpkg import WinPkg
+from module_handler.winfirewall import WinFirewall
 
 def get_module_handler(report_handler, module_name, module_block):
     handler = None
@@ -25,6 +28,12 @@ def get_module_handler(report_handler, module_name, module_block):
         handler = Service
     elif module_name == 'win_secedit':
         handler = WinSecedit
+    elif module_name == 'win_reg':
+        handler = WinReg
+    elif module_name == 'win_pkg':
+        handler = WinPkg
+    elif module_name == 'win_firewall':
+        handler = WinFirewall
 
     if handler:
         return handler(report_handler, module_name, module_block)
