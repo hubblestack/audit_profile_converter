@@ -1,6 +1,7 @@
 import os
 import logging
 import yaml
+import json
 
 log = logging.getLogger(__name__)
 
@@ -35,3 +36,10 @@ def read_file(filepath):
     with open(filepath, 'r') as file:
         data = file.read().replace('\n', '')
     return data
+
+def save_file(filepath, content):
+    parent_dir = os.path.dirname(filepath)
+    if not os.path.exists(parent_dir):
+        os.makedirs(parent_dir)
+    with open(filepath, "wb") as download_file:
+        download_file.write(json.dumps(content))

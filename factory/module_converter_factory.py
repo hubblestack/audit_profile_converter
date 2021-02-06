@@ -9,6 +9,9 @@ from module_handler.winsecedit import WinSecedit
 from module_handler.winreg import WinReg
 from module_handler.winpkg import WinPkg
 from module_handler.winfirewall import WinFirewall
+from module_handler.winauditpol import WinAuditPol
+from module_handler.fdg_connector import FdgConnector
+from module_handler.osquery import Osquery
 
 def get_module_handler(report_handler, module_name, module_block):
     handler = None
@@ -34,6 +37,12 @@ def get_module_handler(report_handler, module_name, module_block):
         handler = WinPkg
     elif module_name == 'win_firewall':
         handler = WinFirewall
+    elif module_name == 'win_auditpol':
+        handler = WinAuditPol
+    elif module_name == 'fdg':
+        handler = FdgConnector
+    elif module_name == 'osquery':
+        handler = Osquery
 
     if handler:
         return handler(report_handler, module_name, module_block)

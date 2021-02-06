@@ -19,6 +19,7 @@ class ReportHandler:
         self._whitelist = []
         self._blacklist = []
         self._skipped = []
+        self._unhandled_modules_set = set()
         self._unhandled_count = 0
 
     def write(self, is_whitelist, old_data, new_data):
@@ -35,7 +36,8 @@ class ReportHandler:
     def skipped(self, old_data):
         self._skipped.append(self._dump_yaml(old_data))
 
-    def add_unhandled(self):
+    def add_unhandled(self, mod_name):
+        self._unhandled_modules_set.add(mod_name)
         self._unhandled_count += 1
 
     def _dump_yaml(self, data):
@@ -50,6 +52,7 @@ class ReportHandler:
             'data': {
                 'total': len(self._whitelist) + len(self._blacklist) + len(self._skipped),
                 'unhandled_count': self._unhandled_count,
+                'unhandled_modules': self._unhandled_modules_set,
                 'whitelist': {
                     'items': self._whitelist,
                     'total': len(self._whitelist),
