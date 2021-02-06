@@ -1,6 +1,6 @@
-from module_handler.module_converter import ModuleConverter
+from module_handler.audit_module_handler import ModuleHandler
 
-class WinAuditPol(ModuleConverter):
+class WinAuditPol(ModuleHandler):
     """
     WinAuditpol specific conversion steps
     """

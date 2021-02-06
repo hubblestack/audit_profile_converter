@@ -1,6 +1,6 @@
-from module_handler.module_converter import ModuleConverter
+from module_handler.audit_module_handler import ModuleHandler
 
-class WinReg(ModuleConverter):
+class WinReg(ModuleHandler):
     """
     WinReg specific conversion steps
     """

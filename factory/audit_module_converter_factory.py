@@ -1,17 +1,16 @@
-from module_handler.grep import Grep
-from module_handler.sysctl import Sysctl
-from module_handler.pkg import Pkg
-from module_handler.systemctl import Systemctl
-from module_handler.stat import Stat
-from module_handler.misc import Misc
-from module_handler.service import Service
-from module_handler.winsecedit import WinSecedit
-from module_handler.winreg import WinReg
-from module_handler.winpkg import WinPkg
-from module_handler.winfirewall import WinFirewall
-from module_handler.winauditpol import WinAuditPol
-from module_handler.fdg_connector import FdgConnector
-from module_handler.osquery import Osquery
+from module_handler.audit.grep import Grep
+from module_handler.audit.sysctl import Sysctl
+from module_handler.audit.pkg import Pkg
+from module_handler.audit.systemctl import Systemctl
+from module_handler.audit.stat import Stat
+from module_handler.audit.misc import Misc
+from module_handler.audit.service import Service
+from module_handler.audit.winsecedit import WinSecedit
+from module_handler.audit.winreg import WinReg
+from module_handler.audit.winpkg import WinPkg
+from module_handler.audit.winfirewall import WinFirewall
+from module_handler.audit.winauditpol import WinAuditPol
+from module_handler.audit.fdg_connector import FdgConnector
 
 def get_module_handler(report_handler, module_name, module_block):
     handler = None
@@ -41,8 +40,6 @@ def get_module_handler(report_handler, module_name, module_block):
         handler = WinAuditPol
     elif module_name == 'fdg':
         handler = FdgConnector
-    elif module_name == 'osquery':
-        handler = Osquery
 
     if handler:
         return handler(report_handler, module_name, module_block)

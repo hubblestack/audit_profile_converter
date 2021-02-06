@@ -8,7 +8,7 @@ import util.helper as helper
 
 log = logging.getLogger(__name__)
 
-class ModuleConverter(ABC):
+class ModuleHandler(ABC):
     """
     Base class for module specific implementation
     """
@@ -20,7 +20,6 @@ class ModuleConverter(ABC):
 
     def convert(self):
         converted_yaml = []
-
         if 'whitelist' not in self._module_block:
             # In some modules, whitelist/blacklist is not there
             # Simulating that behavior here, so that below code can work for all
@@ -29,23 +28,22 @@ class ModuleConverter(ABC):
             self._module_block['whitelist'] = temp
 
         for block_id, single_block in self._module_block['whitelist'].items():
-            converted_yaml.append(self._convert_helper(
+            converted_yaml.extend(self._convert_helper(
                 block_id, single_block
             ))
         
         if 'blacklist' in self._module_block:
             for block_id, single_block in self._module_block['blacklist'].items():
-                converted_yaml.append(self._convert_helper(
+                converted_yaml.extend(self._convert_helper(
                     block_id, single_block, is_whitelist=False
                 ))
-
-        # print(converted_yaml)
+        return converted_yaml
 
     def _convert_helper(self, block_id, single_block, is_whitelist=True):
         if self._is_skipped(single_block):
             self._report_handler.skipped({
                 self._module_name: {block_id: single_block}})
-            return None
+            return []
         converted = self._build_initial_structure(block_id, single_block, is_whitelist)
         for p_os, pdata in single_block['data'].items():
             single_os = {
