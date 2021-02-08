@@ -11,6 +11,7 @@ from module_handler.audit.winpkg import WinPkg
 from module_handler.audit.winfirewall import WinFirewall
 from module_handler.audit.winauditpol import WinAuditPol
 from module_handler.audit.fdg_connector import FdgConnector
+from module_handler.audit.openssl import Openssl
 
 def get_module_handler(report_handler, module_name, module_block):
     handler = None
@@ -40,6 +41,8 @@ def get_module_handler(report_handler, module_name, module_block):
         handler = WinAuditPol
     elif module_name == 'fdg':
         handler = FdgConnector
+    # elif module_name == 'openssl':
+    #     handler = Openssl
 
     if handler:
         return handler(report_handler, module_name, module_block)

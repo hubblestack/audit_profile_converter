@@ -1,6 +1,6 @@
-from module_handler.audit_module_handler import ModuleHandler
+from module_handler.audit_module_handler import AuditModuleHandler
 
-class FdgConnector(ModuleHandler):
+class FdgConnector(AuditModuleHandler):
     """
     FDG Connector specific conversion steps
     """

@@ -8,7 +8,7 @@ import util.helper as helper
 
 log = logging.getLogger(__name__)
 
-class ModuleHandler(ABC):
+class AuditModuleHandler(ABC):
     """
     Base class for module specific implementation
     """
@@ -19,36 +19,41 @@ class ModuleHandler(ABC):
         self._module_block = module_block
 
     def convert(self):
-        converted_yaml = []
-        if 'whitelist' not in self._module_block:
+        converted_yaml = {}
+        if ('whitelist' not in self._module_block and 
+                'blacklist' not in self._module_block):
             # In some modules, whitelist/blacklist is not there
             # Simulating that behavior here, so that below code can work for all
             temp = self._module_block
             self._module_block = {}
             self._module_block['whitelist'] = temp
 
-        for block_id, single_block in self._module_block['whitelist'].items():
-            converted_yaml.extend(self._convert_helper(
-                block_id, single_block
-            ))
+        if 'whitelist' in self._module_block:
+            for block_id, single_block in self._module_block['whitelist'].items():
+                converted_result = self._convert_helper(
+                    block_id, single_block
+                )
+                converted_yaml = dict(list(converted_yaml.items()) + list(converted_result.items()))
         
         if 'blacklist' in self._module_block:
             for block_id, single_block in self._module_block['blacklist'].items():
-                converted_yaml.extend(self._convert_helper(
+                converted_result = self._convert_helper(
                     block_id, single_block, is_whitelist=False
-                ))
+                )
+                converted_yaml = dict(list(converted_yaml.items()) + list(converted_result.items()))
         return converted_yaml
 
     def _convert_helper(self, block_id, single_block, is_whitelist=True):
         if self._is_skipped(single_block):
             self._report_handler.skipped({
                 self._module_name: {block_id: single_block}})
-            return []
+            return {}
         converted = self._build_initial_structure(block_id, single_block, is_whitelist)
         for p_os, pdata in single_block['data'].items():
+            osfinger_os = p_os.replace(' ', '*')
             single_os = {
                 'filter': {
-                    'grains': 'G@osfinger:{0}'.format(p_os)
+                    'grains': 'G@osfinger:{0}'.format(osfinger_os)
                 },
                 'module': self.get_module_name(),
                 'items': []
@@ -68,7 +73,7 @@ class ModuleHandler(ABC):
                 prepared_args = self._prepare_args(p_os, pdata)
                 if prepared_args:
                     single_os['items'].append({
-                        'args': self._prepare_args(p_os, pdata),
+                        'args': prepared_args,
                         'comparator': self._prepare_comparator(p_os, pdata)
                     })
                 else:
@@ -115,10 +120,11 @@ class ModuleHandler(ABC):
                         return m_data['tag']
 
     def _build_initial_structure(self, block_id, single_block, is_whitelist=True):
-        result = {block_id: {
-            'description': single_block['description'],
-            'tag': self.fetch_tag(block_id, single_block)
-        }}
+        result = {block_id: {}}
+        if 'description' in single_block:
+            result[block_id]['description'] = single_block['description']
+        result[block_id]['tag'] = self.fetch_tag(block_id, single_block)
+
         if not is_whitelist:
             result[block_id]['invert_result'] = True
 

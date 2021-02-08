@@ -1,6 +1,6 @@
-from module_handler.audit_module_handler import ModuleHandler
+from module_handler.audit_module_handler import AuditModuleHandler
 
-class Stat(ModuleHandler):
+class Stat(AuditModuleHandler):
     """
     Stat specific conversion steps
     """
@@ -56,18 +56,20 @@ class Stat(ModuleHandler):
         result = {
           'type': 'dict',
           'match': {
-              'uid': m_data['uid'],
-              'user': m_data['user'],
-              'gid': None if 'gid' not in m_data else m_data['gid'],
-              'group': m_data['group'],
-              'mode': {
-                'type': 'file_permission',
-                'match': {
-                  'required_value': m_data['mode']
-                }
-              }
+              'uid': m_data['uid'] if 'uid' in m_data else None,
+              'user': m_data['user'] if 'user' in m_data else None,
+              'gid': m_data['gid'] if 'gid' in m_data else None,
+              'group': m_data['group'] if 'group' in m_data else None
           }
         }
+
+        if 'mode' in m_data:
+            result['match']['mode'] = {
+                'type': 'file_permission',
+                'match': {
+                    'required_value': m_data['mode']
+                }
+            }
 
         if 'allow_more_strict' in m_data:
             result['match']['mode']['match']['allow_more_strict'] = m_data['allow_more_strict']
