@@ -7,7 +7,7 @@ class Grep(AuditModuleHandler):
     def __init__(self, report_handler, module_name, module_block):
         super().__init__(report_handler, module_name, module_block)
 
-    def _prepare_args(self, m_key, m_data):
+    def _prepare_args(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare Grep arguments
 
@@ -33,7 +33,7 @@ class Grep(AuditModuleHandler):
 
         return result
     
-    def _prepare_comparator(self, m_key, m_data):
+    def _prepare_comparator(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare Grep arguments
 
@@ -52,7 +52,8 @@ class Grep(AuditModuleHandler):
         """
         result = {'type': 'string'}
         if 'match_output' in m_data:
-            result['match'] = m_data['match_output']
+            result['match'] = '.*' + m_data['match_output'] + '.*'
+            result['is_regex'] = True
         else:
             # True for any found
             result['match'] = ".*"

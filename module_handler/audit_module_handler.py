@@ -49,6 +49,7 @@ class AuditModuleHandler(ABC):
                 self._module_name: {block_id: single_block}})
             return {}
         converted = self._build_initial_structure(block_id, single_block, is_whitelist)
+        block_tag = converted[block_id]['tag'] if 'tag' in converted[block_id] else None
         for p_os, pdata in single_block['data'].items():
             osfinger_os = p_os.replace(' ', '*')
             single_os = {
@@ -58,26 +59,40 @@ class AuditModuleHandler(ABC):
                 'module': self.get_module_name(),
                 'items': []
             }
+            # list for which custom handling is required
+            unhandled_custom_modules_data = []
+
             if isinstance(pdata, list):
                 for impls in pdata:
                     for m_key, m_data in impls.items():
-                        prepared_args = self._prepare_args(m_key, m_data)
+                        prepared_args = self._prepare_args(m_key, m_data, block_tag, is_whitelist)
                         if prepared_args:
                             single_os['items'].append({
                                 'args': prepared_args,
-                                'comparator': self._prepare_comparator(m_key, m_data)
+                                'comparator': self._prepare_comparator(m_key, m_data, block_tag, is_whitelist)
                             })
                         else:
-                            log.error('Something unexpected happened: key={0}, val={1}'.format(m_key, m_data))
+                            unhandled_custom_modules_data.append({
+                                'module': self.get_module_name(),
+                                'data': pdata
+                            })
             else:
-                prepared_args = self._prepare_args(p_os, pdata)
+                prepared_args = self._prepare_args(p_os, pdata, block_tag, is_whitelist)
                 if prepared_args:
                     single_os['items'].append({
                         'args': prepared_args,
-                        'comparator': self._prepare_comparator(p_os, pdata)
+                        'comparator': self._prepare_comparator(p_os, pdata, block_tag, is_whitelist)
                     })
                 else:
-                    log.error('Something unexpected happened: key={0}, val={1}'.format(p_os, pdata))
+                    unhandled_custom_modules_data.append({
+                        'module': self.get_module_name(),
+                        'data': pdata
+                    })
+
+            if unhandled_custom_modules_data:
+                for unhandled_data in unhandled_custom_modules_data:
+                    if not self._handle_custom(unhandled_data, single_os):
+                        log.error('Something unexpected happened: key={0}, val={1}'.format(p_os, pdata))
 
             converted[block_id]['implementations'].append(single_os)
         
@@ -92,10 +107,10 @@ class AuditModuleHandler(ABC):
         return converted
 
     @abstractmethod
-    def _prepare_args(self, m_key, m_data):
+    def _prepare_args(self, m_key, m_data, block_tag, is_whitelist=True):
         pass
     @abstractmethod
-    def _prepare_comparator(self, m_key, m_data):
+    def _prepare_comparator(self, m_key, m_data, block_tag, is_whitelist=True):
         pass
     
     def get_module_name(self):
@@ -139,3 +154,15 @@ class AuditModuleHandler(ABC):
         To check if this block should be skipped or not
         """
         return 'control' in single_block
+
+    def _handle_custom(self, unhandled_data, single_os_data):
+        if unhandled_data['module'] == 'misc':
+            func_name = unhandled_data['data']['function']
+            if func_name == 'check_if_any_pkg_installed':
+                from module_handler.custom_handling.check_if_any_pkg_installed import MiscPkg1
+                pkg1 = MiscPkg1(self._report_handler, unhandled_data['data'])
+                single_os_data['module'] = 'pkg'
+                single_os_data['check_eval_logic'] = 'or'
+                single_os_data['items'].extend(pkg1.convert())
+                return True
+        return False

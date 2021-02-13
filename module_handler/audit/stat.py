@@ -7,7 +7,7 @@ class Stat(AuditModuleHandler):
     def __init__(self, report_handler, module_name, module_block):
         super().__init__(report_handler, module_name, module_block)
 
-    def _prepare_args(self, m_key, m_data):
+    def _prepare_args(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare Stat arguments
 
@@ -32,7 +32,7 @@ class Stat(AuditModuleHandler):
             'path': m_key
         }
     
-    def _prepare_comparator(self, m_key, m_data):
+    def _prepare_comparator(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare Systemctl arguments
 
@@ -55,13 +55,16 @@ class Stat(AuditModuleHandler):
         """
         result = {
           'type': 'dict',
-          'match': {
-              'uid': m_data['uid'] if 'uid' in m_data else None,
-              'user': m_data['user'] if 'user' in m_data else None,
-              'gid': m_data['gid'] if 'gid' in m_data else None,
-              'group': m_data['group'] if 'group' in m_data else None
-          }
+          'match': {}
         }
+        if 'uid' in m_data:
+            result['match']['uid'] = m_data['uid']
+        if 'user' in m_data:
+            result['match']['user'] = m_data['user']
+        if 'gid' in m_data:
+            result['match']['gid'] = m_data['gid']
+        if 'group' in m_data:
+            result['match']['group'] = m_data['group'] 
 
         if 'mode' in m_data:
             result['match']['mode'] = {

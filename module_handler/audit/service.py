@@ -7,7 +7,7 @@ class Service(AuditModuleHandler):
     def __init__(self, report_handler, module_name, module_block):
         super().__init__(report_handler, module_name, module_block)
 
-    def _prepare_args(self, m_key, m_data):
+    def _prepare_args(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare Service arguments
 
@@ -25,7 +25,7 @@ class Service(AuditModuleHandler):
             'name': m_key
         }
     
-    def _prepare_comparator(self, m_key, m_data):
+    def _prepare_comparator(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare Service arguments
 

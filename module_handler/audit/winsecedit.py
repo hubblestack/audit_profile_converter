@@ -7,7 +7,7 @@ class WinSecedit(AuditModuleHandler):
     def __init__(self, report_handler, module_name, module_block):
         super().__init__(report_handler, module_name, module_block)
 
-    def _prepare_args(self, m_key, m_data):
+    def _prepare_args(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare WinSecedit arguments
 
@@ -32,7 +32,7 @@ class WinSecedit(AuditModuleHandler):
 
         return result
     
-    def _prepare_comparator(self, m_key, m_data):
+    def _prepare_comparator(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare WinSecedit arguments
 
@@ -50,13 +50,27 @@ class WinSecedit(AuditModuleHandler):
             m_key will be "PasswordHistorySize"
             m_data will be complete dictionary against m_key
         """
+        key_name = 'sec_value'
+        if not is_whitelist:
+            key_name = 'coded_sec_value'
         result = {
             'type': 'dict',
             'match': {
-                'sec_value': {
+                key_name: {
                     'type': 'list',
-                    'match': [m_data['match_output']]
+                    'match_all': m_data['match_output'].split(','),
+                    'ignore_case': True
                 }
             }
         }
+
+        ## hack, custom handling
+        if block_tag in ['ADOBEW-00056', 'ADOBEW-00072']:
+            result = {
+                'type': 'dict',
+                'match': {
+                    'coded_sec_value': m_data['match_output']
+                }
+            }
+
         return result

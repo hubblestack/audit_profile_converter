@@ -46,3 +46,14 @@ def save_file(filepath, content):
     with open(filepath, "w") as download_file:
         yaml.safe_dump(content, download_file, default_flow_style=False)
         # ruamel.yaml.round_trip_dump(content, download_file, explicit_start=True)
+    # normalize(filepath)
+
+def normalize(filepath):
+    content = ''
+    with open(filepath, 'r') as content_file:
+        content = content_file.read()
+
+    content = content.replace('\'"', '\'')
+    content = content.replace('"\'', '\'')
+    with open(filepath, 'w') as content_file:
+        content_file.write(content)

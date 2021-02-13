@@ -7,7 +7,7 @@ class Misc(AuditModuleHandler):
     def __init__(self, report_handler, module_name, module_block):
         super().__init__(report_handler, module_name, module_block)
 
-    def _prepare_args(self, m_key, m_data):
+    def _prepare_args(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare Misc arguments
 
@@ -44,6 +44,7 @@ class Misc(AuditModuleHandler):
             result['path'] = m_data['args'][0]
             result['permission'] = m_data['args'][1]
         elif function_name == 'check_sshd_paramters':
+            result['function'] = 'check_sshd_parameters'
             result['pattern'] = m_data['args'][0]
             if 'kwargs' in m_data:
                 if 'values' in m_data['kwargs']:
@@ -61,7 +62,7 @@ class Misc(AuditModuleHandler):
             
         return result
     
-    def _prepare_comparator(self, m_key, m_data):
+    def _prepare_comparator(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare Grep arguments
 

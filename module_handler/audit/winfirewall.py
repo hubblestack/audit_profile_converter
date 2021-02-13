@@ -7,7 +7,7 @@ class WinFirewall(AuditModuleHandler):
     def __init__(self, report_handler, module_name, module_block):
         super().__init__(report_handler, module_name, module_block)
 
-    def _prepare_args(self, m_key, m_data):
+    def _prepare_args(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare WinReg arguments
 
@@ -29,7 +29,7 @@ class WinFirewall(AuditModuleHandler):
             'value_type': m_data['value_type']
         }
     
-    def _prepare_comparator(self, m_key, m_data):
+    def _prepare_comparator(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare WinFirewall arguments
 

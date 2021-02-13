@@ -7,7 +7,7 @@ class WinReg(AuditModuleHandler):
     def __init__(self, report_handler, module_name, module_block):
         super().__init__(report_handler, module_name, module_block)
 
-    def _prepare_args(self, m_key, m_data):
+    def _prepare_args(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare WinReg arguments
 
@@ -28,7 +28,7 @@ class WinReg(AuditModuleHandler):
             'name': m_key
         }
     
-    def _prepare_comparator(self, m_key, m_data):
+    def _prepare_comparator(self, m_key, m_data, block_tag, is_whitelist=True):
         """
         Prepare WinReg arguments
 
@@ -45,20 +45,29 @@ class WinReg(AuditModuleHandler):
             m_key will be 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LanmanWorkstation\AllowInsecureGuestAuth'
             m_data will be complete dictionary against m_key
         """
-        # default value of op (equal)
-        operator = '=='
-        if m_data['value_type'] == 'more':
-            operator = '>='
-        elif m_data['value_type'] == 'less':
-            operator = '<='
-        match_output = m_data['match_output']
         result = {
             'type': 'dict',
             'match': {
                 m_key: {
-                  'type': "number",
-                  'match': f"{operator} {match_output}"
+                    'type': 'dict',
+                    'compare_all_values': {
+                        'type': "number",
+                        'match': '==' + m_data['match_output']
+                    }
                 }
             }
         }
+
+        ## Hack
+        if '<SID>' not in m_key:
+            result = {
+            'type': 'dict',
+            'match': {
+                m_key: {
+                    'type': 'number',
+                    'match': '==' + m_data['match_output']
+                }
+            }
+        }
+
         return result
