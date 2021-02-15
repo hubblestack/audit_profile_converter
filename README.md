@@ -8,3 +8,14 @@ A small architecture diagram to understand this code.
 
 ![alt text](./docs/hubble_profile_converter.png)
 
+## How to run
+Currently, it is not having any command line options. 
+
+Open app.py
+There are three variables which you need to change
+
+```
+folder (The source folder where old profiles are placed)
+report_folder (Report folder where html report will be written)
+dest_profile_folder (Target folder where converted profiles will be written)
+```
