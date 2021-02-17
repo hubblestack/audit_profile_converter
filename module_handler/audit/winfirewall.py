@@ -24,9 +24,12 @@ class WinFirewall(AuditModuleHandler):
             m_key will be 'Enabled'
             m_data will be complete dictionary against m_key
         """
+        v_type = m_data['value_type']
+        if v_type == 'domain':
+            v_type = v_type.title()
         return {
             'name': m_key,
-            'value_type': m_data['value_type']
+            'value_type': v_type
         }
     
     def _prepare_comparator(self, m_key, m_data, block_tag, is_whitelist=True):
@@ -49,10 +52,8 @@ class WinFirewall(AuditModuleHandler):
         result = {
             'type': 'dict',
             'match': {
-                'setting_value': {
-                  'type': "string",
-                  'match': [m_data['match_output']]
-                }
-            }
+                'setting_value': m_data['match_output']
+            },
+            'ignore_case': True
         }
         return result

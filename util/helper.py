@@ -44,7 +44,7 @@ def save_file(filepath, content):
     if not os.path.exists(parent_dir):
         os.makedirs(parent_dir)
     with open(filepath, "w") as download_file:
-        yaml.safe_dump(content, download_file, default_flow_style=False)
+        yaml.safe_dump(content, download_file, default_flow_style=False, sort_keys=False)
         # ruamel.yaml.round_trip_dump(content, download_file, explicit_start=True)
     # normalize(filepath)
 

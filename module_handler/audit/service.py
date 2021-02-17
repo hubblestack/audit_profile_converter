@@ -41,10 +41,10 @@ class Service(AuditModuleHandler):
         """
         return {
             'type': 'list',
-            'match_any': {
+            'match_any': [{
               'name': m_key,
               'running': True
-            }
+            }]
         }
 
     def fetch_tag(self, block_id, single_block):

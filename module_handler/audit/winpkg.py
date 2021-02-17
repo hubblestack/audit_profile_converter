@@ -59,7 +59,7 @@ class WinPkg(AuditModuleHandler):
                 'package_version': {
                     'type': "version",
                     'match':
-                      [f"{operator} {match_output}"]
+                      f"{operator} {match_output}"
                 }
             }
         }
