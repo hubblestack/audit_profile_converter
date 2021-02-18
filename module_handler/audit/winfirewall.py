@@ -24,9 +24,7 @@ class WinFirewall(AuditModuleHandler):
             m_key will be 'Enabled'
             m_data will be complete dictionary against m_key
         """
-        v_type = m_data['value_type']
-        if v_type == 'domain':
-            v_type = v_type.title()
+        v_type = m_data['value_type'].title()
         return {
             'name': m_key,
             'value_type': v_type
