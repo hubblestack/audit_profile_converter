@@ -2,6 +2,7 @@ from module_handler.fdg.osquery import Osquery
 from module_handler.fdg.grep import Grep
 from module_handler.fdg.stat import Stat
 from module_handler.fdg.process import Process
+from module_handler.fdg.readfile import Readfile
 from module_handler.fdg.ssl_certificate import SSLCertificate
 from module_handler.fdg.commandlineparser import CommandLineParser
 
@@ -20,6 +21,8 @@ def get_module_handler(
         handler = Process
     elif module_name == 'command_line_parser':
         handler = CommandLineParser
+    elif module_name == 'readfile':
+        handler = Readfile
 
     if handler:
         return handler(
