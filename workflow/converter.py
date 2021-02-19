@@ -90,18 +90,13 @@ class Converter:
     def _handle_audit(self, yaml_dict, profile_file, report_handler):
         converted = {}
         for mod_name, yaml_block in yaml_dict.items():
-            if self._is_misc_custom_handling(mod_name, yaml_block):
-                from module_handler.custom_handling.check_if_any_pkg_installed import MiscPkg1
-                pkg1 = MiscPkg1(report_handler, mod_name, yaml_block)
-                converted_result = pkg1.convert()
-            else:
-                module_handler = audit_converter_factory.get_module_handler(
-                    report_handler, mod_name, yaml_block)
-                if not module_handler:
-                    report_handler.add_unhandled(mod_name)
-                    log.error('Unhandled module: {0} in file: {1}'.format(mod_name, profile_file))
-                    continue
-                converted_result = module_handler.convert()
+            module_handler = audit_converter_factory.get_module_handler(
+                report_handler, mod_name, yaml_block)
+            if not module_handler:
+                report_handler.add_unhandled(mod_name)
+                log.error('Unhandled module: {0} in file: {1}'.format(mod_name, profile_file))
+                continue
+            converted_result = module_handler.convert()
             converted = dict(list(converted.items()) + list(converted_result.items()))
             # converted.extend(module_handler.convert())
         return converted
