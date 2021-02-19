@@ -23,15 +23,24 @@ class FdgModuleHandler(ABC):
     def convert(self):
         converted = self._build_initial_structure()
                 
+        any_issue = True
         prepared_args = self._prepare_args()
         if prepared_args:
+            any_issue = False
             converted[self._block_id]['args'] = prepared_args
-            comparator_args = self._prepare_comparator()
-            if comparator_args:
-                converted[self._block_id]['comparator'] = self._prepare_comparator()
-            self._build_end_structure(converted)
-        else:
+        comparator_args = self._prepare_comparator()
+        if comparator_args:
+            any_issue = False
+            converted[self._block_id]['comparator'] = self._prepare_comparator()
+
+        if any_issue:
             log.error('Something unexpected happened: block_id={0}'.format(self._block_id))
+            return {}
+
+        self._build_end_structure(converted)
+
+        if prepared_args and 'temp' in prepared_args and prepared_args['temp'] is True:
+            return converted
 
         self._report_handler.write(
             True, 

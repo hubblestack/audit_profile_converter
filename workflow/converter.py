@@ -85,7 +85,7 @@ class Converter:
             converted_result = module_handler.convert()
             converted = dict(list(converted.items()) + list(converted_result.items()))
 
-        return converted
+        return self._post_process_fdg(converted)
 
     def _handle_audit(self, yaml_dict, profile_file, report_handler):
         converted = {}
@@ -119,3 +119,39 @@ class Converter:
                         return function_name
         else:
             return None
+
+    def _post_process_fdg(self, converted):
+        result = {}
+        block_name_to_replace = None
+        block_name_to_replace_with = None
+        for ck, cv in converted.items():
+            if 'args' in cv and 'temp' in cv['args']:
+                block_name_to_replace = ck
+                op_target = self._get_pipe_target(cv)
+                if op_target:
+                    block_name_to_replace_with = self._get_pipe_target(cv)['val']
+                break
+        
+        for ck, cv in converted.items():
+            op_target = self._get_pipe_target(cv)
+            if op_target and op_target['val'] == block_name_to_replace:
+                cv[op_target['op']] = block_name_to_replace_with
+            
+            if ck != block_name_to_replace:
+                result[ck] = cv
+        return result
+
+    def _get_pipe_target(self, block_dict):
+        if 'xpipe_on_true' in block_dict:
+            return {'op': 'xpipe_on_true', 'val': block_dict['xpipe_on_true']}
+        if 'xpipe_on_false' in block_dict:
+            return {'op': 'xpipe_on_false', 'val': block_dict['xpipe_on_false']}
+        if 'pipe_on_true' in block_dict:
+            return {'op': 'pipe_on_true', 'val': block_dict['pipe_on_true']}
+        if 'pipe_on_false' in block_dict:
+            return {'op': 'pipe_on_false', 'val': block_dict['pipe_on_false']}
+        if 'xpipe' in block_dict:
+            return {'op': 'xpipe', 'val': block_dict['xpipe']}
+        if 'pipe' in block_dict:
+            return {'op': 'pipe', 'val': block_dict['pipe']}
+        return None
