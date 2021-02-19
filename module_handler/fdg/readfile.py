@@ -30,12 +30,11 @@ class Readfile(FdgModuleHandler):
         if 'args' in self._module_block:
             result = {
                 'path': self._module_block['args'][0],
-                'subkey': self._module_block['kwargs']['subkey'],
-                'sep': self._module_block['kwargs']['sep']
+                'subkey': self._module_block['kwargs']['subkey']
             }
-            if 'kwargs' in self._module_block:
-                if 'grep_args' in self._module_block['kwargs']:
-                    result['flags'] = [self._module_block['kwargs']['grep_args']]
+            if 'sep' in self._module_block['kwargs']:
+                result['sep'] = self._module_block['kwargs']['sep']
+
             return result
         return None
 
