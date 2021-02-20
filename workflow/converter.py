@@ -1,8 +1,6 @@
 import os
 import logging
 
-from module_handler.audit_module_handler import AuditModuleHandler
-from module_handler.fdg_module_handler import FdgModuleHandler
 from factory import audit_converter_factory
 from factory import fdg_converter_factory
 from report_handler.report_handler import ReportHandler
@@ -15,11 +13,12 @@ class Converter:
     Starting point of converter 
     """
 
-    def __init__(self, folder, dest_profile_folder, report_folder, template_folder):
+    def __init__(self, folder, dest_profile_folder, report_folder, template_folder, osfinger_mapper):
         self._report_folder = report_folder
         self._dest_profile_folder = dest_profile_folder
         self._folder = folder
         self._template_folder = template_folder
+        self._osfinger_mapper = osfinger_mapper
 
     def convert(self):
         profile_files = helper.get_file_list(self._folder)
@@ -96,9 +95,9 @@ class Converter:
                 report_handler.add_unhandled(mod_name)
                 log.error('Unhandled module: {0} in file: {1}'.format(mod_name, profile_file))
                 continue
+            module_handler.set_osfinger_mapper(self._osfinger_mapper)
             converted_result = module_handler.convert()
             converted = dict(list(converted.items()) + list(converted_result.items()))
-            # converted.extend(module_handler.convert())
         return converted
 
     def get_module_type(self):

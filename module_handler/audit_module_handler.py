@@ -18,6 +18,9 @@ class AuditModuleHandler(ABC):
         self._module_name = module_name
         self._module_block = module_block
 
+    def set_osfinger_mapper(self, osfinger_mapper):
+        self._osfinger_mapper = osfinger_mapper
+
     def convert(self):
         converted_yaml = {}
         if ('whitelist' not in self._module_block and 
@@ -51,10 +54,9 @@ class AuditModuleHandler(ABC):
         converted = self._build_initial_structure(block_id, single_block, is_whitelist)
         block_tag = converted[block_id]['tag'] if 'tag' in converted[block_id] else None
         for p_os, pdata in single_block['data'].items():
-            osfinger_os = 'G@osfinger:' + ' or G@osfinger:'.join(x.strip().replace(' ', '*') for x in p_os.split(','))
             single_os = {
                 'filter': {
-                    'grains': osfinger_os
+                    'grains': self._osfinger_mapper.convert_str(p_os)
                 },
                 'module': self.get_module_name(),
                 'items': []
