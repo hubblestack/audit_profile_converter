@@ -39,7 +39,7 @@ class Grep(FdgModuleHandler):
         if 'args' in self._module_block:
             result = {
                 'path': self._module_block['args'][0],
-                'pattern': [self._module_block['kwargs']['pattern']],
+                'pattern': self._module_block['kwargs']['pattern'],
                 'chain_filepath': True
             }
             return result
