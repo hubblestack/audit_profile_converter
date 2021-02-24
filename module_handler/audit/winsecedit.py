@@ -53,7 +53,8 @@ class WinSecedit(AuditModuleHandler):
         key_name = 'sec_value'
         if not is_whitelist:
             key_name = 'coded_sec_value'
-        
+        elif 'value_type' in m_data and m_data['value_type'] in ['more', 'less']:
+            key_name = 'coded_sec_value'
         match_output_list = []
         for mitem in m_data['match_output'].split(','):
             match_output_list.append(mitem.strip())
@@ -67,6 +68,18 @@ class WinSecedit(AuditModuleHandler):
                 }
             }
         }
+
+        # custom handling for more, less
+        if m_data['value_type'] in ['more', 'less']:
+            op = ''
+            if m_data['value_type'] == 'more':
+                op = '>='
+            elif m_data['value_type'] == 'less':
+                op = '<='
+            result['match'][key_name] = {
+                'type': 'number',
+                'match': op + m_data['match_output']
+            }
 
         ## hack, custom handling
         if block_tag in ['ADOBEW-00056', 'ADOBEW-00072']:
