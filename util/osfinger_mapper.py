@@ -24,7 +24,7 @@ class OsfingerMapper:
         os_list = [x.strip() for x in os_str.split(',')]
         result = []
         for oss in os_list:
-            # result[oss] = self.get(oss)
-            result.append(self.get(oss))
+            c_oss = self.get(oss).replace(' ', '*')
+            result.append(self.get(c_oss))
 
         return 'G@osfinger:' + ' or G@osfinger:'.join(result)
