@@ -53,12 +53,16 @@ class WinSecedit(AuditModuleHandler):
         key_name = 'sec_value'
         if not is_whitelist:
             key_name = 'coded_sec_value'
+        
+        match_output_list = []
+        for mitem in m_data['match_output'].split(','):
+            match_output_list.append(mitem.strip())
         result = {
             'type': 'dict',
             'match': {
                 key_name: {
                     'type': 'list',
-                    'match_all': m_data['match_output'].split(','),
+                    'match_all': match_output_list,
                     'ignore_case': True
                 }
             }

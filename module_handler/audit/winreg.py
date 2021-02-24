@@ -45,6 +45,11 @@ class WinReg(AuditModuleHandler):
             m_key will be 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LanmanWorkstation\AllowInsecureGuestAuth'
             m_data will be complete dictionary against m_key
         """
+        op = '=='
+        if m_data['value_type'] == 'more':
+            op = '>='
+        elif m_data['value_type'] == 'less':
+            op = '<='
         result = {
             'type': 'dict',
             'match': {
@@ -52,7 +57,7 @@ class WinReg(AuditModuleHandler):
                     'type': 'dict',
                     'compare_all_values': {
                         'type': "number",
-                        'match': '==' + m_data['match_output']
+                        'match': op + m_data['match_output']
                     }
                 }
             }
@@ -65,7 +70,7 @@ class WinReg(AuditModuleHandler):
             'match': {
                 m_key: {
                     'type': 'number',
-                    'match': '==' + m_data['match_output']
+                    'match': op + m_data['match_output']
                 }
             }
         }
