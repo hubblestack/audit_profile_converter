@@ -57,7 +57,11 @@ class WinSecedit(AuditModuleHandler):
             key_name = 'coded_sec_value'
         match_output_list = []
         for mitem in m_data['match_output'].split(','):
-            match_output_list.append(mitem.strip())
+            if block_tag in ['CIS-2.3.7.4']:
+                mitem = mitem.replace('"', '')
+                match_output_list.append(mitem)
+            else:
+                match_output_list.append(mitem.strip())
         result = {
             'type': 'dict',
             'match': {
@@ -82,12 +86,28 @@ class WinSecedit(AuditModuleHandler):
             }
 
         ## hack, custom handling
-        if block_tag in ['ADOBEW-00056', 'ADOBEW-00072']:
+        if block_tag in ['ADOBEW-00056', 'ADOBEW-00072', 'CIS-2.3.10.10', 'CIS-2.3.11.7']:
             result = {
                 'type': 'dict',
                 'match': {
                     'coded_sec_value': m_data['match_output']
                 }
             }
+        if block_tag in ['CIS-2.3.11.9', 'CIS-2.3.11.10']:
+            result['match'][key_name]['match_all'] = [m_data['match_output']]
+        if block_tag in ['CIS-2.2.5']:
+            mapping = []
+            for m in result['match'][key_name]['match_all']:
+                mapping.append(self._get_mapping(m))
+            result['match'][key_name]['match_all'] = mapping
 
         return result
+
+    def _get_mapping(self, key):
+        mapping = {
+            'Administrators': '*S-1-5-19',
+            'LOCAL SERVICE': '*S-1-5-20',
+            'NETWORK SERVICE': '*S-1-5-32-544'
+        }
+
+        return mapping.get(key)
