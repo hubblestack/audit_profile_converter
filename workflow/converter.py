@@ -30,7 +30,7 @@ class Converter:
                 self._report_folder, self._folder, profile_file, self._template_folder)
 
             # start working on single file
-            yaml_dict = helper.load_yaml(profile_file)
+            yaml_dict, comments = helper.load_yaml(profile_file)
             if not yaml_dict:
                 log.info(f'No content in file: {profile_file}')
                 continue
@@ -43,7 +43,7 @@ class Converter:
 
             target_file = self._get_target_filepath(profile_file)
             log.info(f'Writing target file: {target_file}')
-            helper.save_file(target_file, converted_yaml)
+            helper.save_file(target_file, converted_yaml, comments)
             report_handler.save()
 
     def should_skip(self, filename):

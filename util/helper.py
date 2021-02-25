@@ -37,23 +37,34 @@ def load_yaml(filepath):
         # yaml_data = ruamel.yaml.round_trip_load(file_handle, preserve_quotes=True)
         yaml_data = yaml.safe_load(file_handle)
 
-    return yaml_data
+    # read comments from top
+    comments = load_yaml_comments(filepath)
+    return (yaml_data, comments)
 
-def save_file(filepath, content):
+def load_yaml_comments(filepath):
+    comments = []
+    with open(filepath, 'r') as f:
+        for line in f:
+            if line.strip().startswith('#'):
+                comments.append(line.replace('\n', ''))
+            elif line.strip() == '':
+                continue
+            else:
+                break
+    return comments
+
+def save_file(filepath, content, comments):
     parent_dir = os.path.dirname(filepath)
     if not os.path.exists(parent_dir):
         os.makedirs(parent_dir)
-    with open(filepath, "w") as download_file:
+
+    if comments:
+        with open(filepath, 'w') as the_file:
+            for comment in comments:
+                the_file.write(comment)
+                the_file.write('\n')
+            the_file.write('\n')
+
+    with open(filepath, "a") as download_file:
         yaml.safe_dump(content, download_file, default_flow_style=False, sort_keys=False)
-        # ruamel.yaml.round_trip_dump(content, download_file, explicit_start=True)
-    # normalize(filepath)
 
-def normalize(filepath):
-    content = ''
-    with open(filepath, 'r') as content_file:
-        content = content_file.read()
-
-    content = content.replace('\'"', '\'')
-    content = content.replace('"\'', '\'')
-    with open(filepath, 'w') as content_file:
-        content_file.write(content)
