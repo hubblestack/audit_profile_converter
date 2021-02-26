@@ -55,3 +55,24 @@ class Systemctl(AuditModuleHandler):
     def get_module_name(self):
         # we clubbed systemctl to service module
         return 'service'
+
+    def fetch_tag(self, block_id, single_block):
+        """
+        Return first tag found in single block
+        """
+        tag = self._fetch_tag1(block_id, single_block)
+        if not tag:
+            for _, pdata in single_block['data'].items():
+                for impls in pdata:
+                    for _, m_data in impls.items():
+                        return m_data
+
+    def _fetch_tag1(self, block_id, single_block):
+        """
+        For some style of schemes, this code will work
+        """
+        for _, pdata in single_block['data'].items():
+            for impls in pdata:
+                for _, m_data in impls.items():
+                    if 'tag' in m_data:
+                        return m_data['tag']

@@ -58,13 +58,15 @@ def save_file(filepath, content, comments):
     if not os.path.exists(parent_dir):
         os.makedirs(parent_dir)
 
+    file_mode = 'w'
     if comments:
-        with open(filepath, 'w') as the_file:
+        with open(filepath, file_mode = 'w') as the_file:
+            file_mode = 'a'
             for comment in comments:
                 the_file.write(comment)
                 the_file.write('\n')
             the_file.write('\n')
 
-    with open(filepath, "a") as download_file:
+    with open(filepath, file_mode) as download_file:
         yaml.safe_dump(content, download_file, default_flow_style=False, sort_keys=False)
 
