@@ -66,6 +66,7 @@ class Systemctl(AuditModuleHandler):
                 for impls in pdata:
                     for _, m_data in impls.items():
                         return m_data
+        return tag
 
     def _fetch_tag1(self, block_id, single_block):
         """
