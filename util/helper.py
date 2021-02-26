@@ -60,7 +60,7 @@ def save_file(filepath, content, comments):
 
     file_mode = 'w'
     if comments:
-        with open(filepath, file_mode = 'w') as the_file:
+        with open(filepath, file_mode) as the_file:
             file_mode = 'a'
             for comment in comments:
                 the_file.write(comment)
