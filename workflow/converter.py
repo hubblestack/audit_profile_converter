@@ -82,7 +82,7 @@ class Converter:
                 log.error('Unhandled module: {0} in file: {1}'.format(mod_name, profile_file))
                 continue
             converted_result = module_handler.convert()
-            converted = dict(list(converted.items()) + list(converted_result.items()))
+            converted = helper.merge_dict(converted, converted_result)
 
         return self._post_process_fdg(converted)
 
@@ -97,7 +97,7 @@ class Converter:
                 continue
             module_handler.set_osfinger_mapper(self._osfinger_mapper)
             converted_result = module_handler.convert()
-            converted = dict(list(converted.items()) + list(converted_result.items()))
+            converted = helper.merge_dict(converted, converted_result)
         return converted
 
     def get_module_type(self):

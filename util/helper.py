@@ -2,6 +2,8 @@ import os
 import logging
 import yaml
 import json
+import random
+import string
 
 log = logging.getLogger(__name__)
 
@@ -33,7 +35,6 @@ def load_yaml(filepath):
 
     yaml_data = None
     with open(filepath, 'r') as file_handle:
-        # yaml_data = ruamel.yaml.round_trip_load(file_handle, preserve_quotes=True)
         yaml_data = yaml.safe_load(file_handle)
 
     # read comments from top
@@ -69,3 +70,24 @@ def save_file(filepath, content, comments):
     with open(filepath, file_mode) as download_file:
         yaml.safe_dump(content, download_file, default_flow_style=False, sort_keys=False)
 
+def merge_dict(dict1, dict2):
+    # handle duplicates
+    modified_dict2 = {}
+    for key in dict2:
+        if key in dict1:
+            unique_key = _get_unique_key(dict1, key)
+            modified_dict2[unique_key] = dict2[key]
+        else:
+            modified_dict2[key] = dict2[key]
+    res = dict(list(dict1.items()) + list(modified_dict2.items()))
+    return res
+
+def _get_unique_key(dict1, key_to_search):
+    result_key = key_to_search
+
+    letters = string.digits
+    while result_key in dict1:
+        random_num = ''.join(random.choice(letters) for i in range(2))
+        result_key = f'{key_to_search}_{random_num}'
+
+    return result_key

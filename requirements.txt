@@ -1,7 +1,3 @@
 pyyaml
 # mustache templating
 chevron
-
-# for yaml parsing
-# pyyaml destroys string quotes
-ruamel.yaml

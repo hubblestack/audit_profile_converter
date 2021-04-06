@@ -36,14 +36,14 @@ class AuditModuleHandler(ABC):
                 converted_result = self._convert_helper(
                     block_id, single_block
                 )
-                converted_yaml = dict(list(converted_yaml.items()) + list(converted_result.items()))
+                converted_yaml = helper.merge_dict(converted_yaml, converted_result)
         
         if 'blacklist' in self._module_block:
             for block_id, single_block in self._module_block['blacklist'].items():
                 converted_result = self._convert_helper(
                     block_id, single_block, is_whitelist=False
                 )
-                converted_yaml = dict(list(converted_yaml.items()) + list(converted_result.items()))
+                converted_yaml = helper.merge_dict(converted_yaml, converted_result)
         return converted_yaml
 
     def _convert_helper(self, block_id, single_block, is_whitelist=True):
