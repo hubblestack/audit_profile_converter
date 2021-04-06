@@ -2,7 +2,6 @@ import os
 import logging
 import yaml
 import json
-import ruamel.yaml
 
 log = logging.getLogger(__name__)
 

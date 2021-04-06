@@ -1,0 +1,32 @@
+*
+*CoreOS*
+*Debian*
+*Red Hat*
+*Ubuntu*
+Amazon Linux*
+Amazon Linux-2
+CentOS Linux-7
+CentOS Linux-8
+CentOS*
+CentOS-6
+Debian*
+Debian*7
+Debian*8
+Debian*9
+Debian-8
+Done
+INCOMPLETE
+Microsoft Windows Server 2012*
+Microsoft Windows Server 2016*
+Microsoft Windows Server 2019*
+Microsoft Windows Server 201[!2]*
+Oracle Linux Server-7
+Oracle Linux*
+Red Hat Enterprise Linux Server-6
+Red Hat Enterprise Linux Server-7
+Red Hat*
+Ubuntu*
+Ubuntu-14.04
+Ubuntu-16.04
+Ubuntu-18*
+Ubuntu-18.04

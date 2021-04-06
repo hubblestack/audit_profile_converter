@@ -11,6 +11,15 @@ A small architecture diagram to understand this code.
 ## How to run
 Currently, it is not having any command line options. 
 
+### Prerequisites
+Python 3
+
+### Install dependencies
+
+```
+pip install -r requirements.txt
+```
+
 Open app.py
 There are three variables which you need to change
 
@@ -19,3 +28,16 @@ folder (The source folder where old profiles are placed)
 report_folder (Report folder where html report will be written)
 dest_profile_folder (Target folder where converted profiles will be written)
 ```
+
+### Run
+
+```
+python app.py
+```
+
+## Logs
+It generate a log file for each run
+
+## Important
+- It will not clean output folder. It will just overwrite files, if exists. Or, add new files. 
+- It will not add profile comments that may exists in between.

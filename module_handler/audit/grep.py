@@ -27,7 +27,10 @@ class Grep(AuditModuleHandler):
             'path': m_key
         }
         if 'pattern' in m_data:
-            result['pattern'] = m_data['pattern']
+            pattern = m_data['pattern']
+            if ' ' in pattern:
+                pattern = f'"{pattern}"'
+            result['pattern'] = pattern
         if 'grep_args' in m_data:
             result['flags'] = m_data['grep_args']
 
