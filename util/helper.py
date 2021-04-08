@@ -87,7 +87,6 @@ def _get_unique_key(dict1, key_to_search):
 
     letters = string.digits
     while result_key in dict1:
-        random_num = ''.join(random.choice(letters) for i in range(2))
-        result_key = f'{key_to_search}_{random_num}'
+        result_key = f'{result_key}_new'
 
     return result_key
