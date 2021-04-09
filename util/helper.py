@@ -76,6 +76,8 @@ def merge_dict(dict1, dict2):
     for key in dict2:
         if key in dict1:
             unique_key = _get_unique_key(dict1, key)
+            if unique_key != key:
+                log.info(f'Renaming check-id: {key} to {unique_key}')
             modified_dict2[unique_key] = dict2[key]
         else:
             modified_dict2[key] = dict2[key]
